@@ -1,0 +1,32 @@
+#!/usr/bin/bash
+PATHRM=$1
+RETIME=$2
+EXTFILE=$3
+LOGFILE=/var/log/clear-files-$(date +'%d%m%y:%H%M').log
+if [[ $# -ne 3 ]];then
+	echo "----------------------------------------------------------"
+	echo "Number of argument not valid for running script.Exit now!!!"
+	echo "----------------------------------------------------------"
+	exit 30
+
+fi
+
+echo -e "Do you want to remove file with below condition?"
+echo -e "\nExtension of files: $EXTFILE"
+echo -e "\nPath scanning files: $PATHRM"
+echo -e "\nRention to keep files: $RETIME days"
+
+read -p "Do you want to coninue scan and remove file? (Y/N): " choice
+echo $choice
+if [[ choice -eq "Y" ]];then
+	find $PATHRM  -maxdepth 1 -name \*.$EXTFILE -mtime +$RETIME -exec ls -lrt {} \; > $LOGFILE;  
+	echo $LOGFILE
+        find $PATHRM  -maxdepth 1 -name \*.$EXTFILE -mtime +$RETIME -exec rm -f {} \;
+
+else
+	echo "----------------------------------------------------------"
+        echo "Exiting script not scanning and removing any files!!!"
+        echo "----------------------------------------------------------"
+        exit 36
+
+fi
